@@ -66,3 +66,7 @@ Don't forgot to replace parameters between `[ ]` with your own IDs provided by u
 ## Testing
 
 To verify that your integration is working properly, add the `testMode` parameter to `loadAd` config
+
+## Any questions
+
+Please contact our support team.
