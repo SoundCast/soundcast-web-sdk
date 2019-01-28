@@ -62,6 +62,9 @@ audioAdManager.requestAd({networkId: [YOUR_NETWORK_ID], siteId: [YOUR_SITE_ID], 
 
 Don't forgot to replace parameters between `[ ]` with your own IDs provided by us.
 
+## Integration Sample 
+
+https://demo.soundcast.fm/
 
 ## Testing
 
