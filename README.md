@@ -57,7 +57,7 @@ Here is the full list of events :
 Call this method to request for an audio ad.
 
 ```
-audioAdManager.requestAd({networkId: [YOUR_NETWORK_ID], siteId: [YOUR_SITE_ID], tagId: [YOUR_TAG_ID], timeout: 5});
+audioAdManager.requestAd({soundcastIs: [YOUR_SOUNDCAST_ID], timeout: 5});
 ```
 
 Don't forgot to replace parameters between `[ ]` with your own IDs provided by us.
