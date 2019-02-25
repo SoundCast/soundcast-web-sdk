@@ -7,6 +7,7 @@ SoundCast Web SDK is a javascript library for loading SoundCast audio ads in pub
 * [Initialize](#initialize)
 * [Event Listeners](#event-listeners)
 * [Request Ad](#request-ad)
+* [IOS specific](#ios-specific)
 * [Testing](#testing)
 
 ## Installation
