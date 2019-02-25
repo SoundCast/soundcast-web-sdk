@@ -62,6 +62,45 @@ audioAdManager.requestAd({soundcastIs: [YOUR_SOUNDCAST_ID], timeout: 5});
 
 Don't forgot to replace parameters between `[ ]` with your own IDs provided by us.
 
+## IOS specific
+Due to IOS limitation, the ad needs to be stiched to the content. In order to do so, you just need to add the following function to your script.
+
+```
+
+  function stichAd4Ios(playerClassName, soundcastId, testMode=false) {
+    var src = document.body.querySelector(playerClassName).src;
+      var pageUrl = window.location;
+      var pageUrl = window.location;
+      src = 'https://stitch.api.soundcast.fm/v1/podcast?podcastUrl='+src;
+      src =  src + '&soundcastId='+soundcastId;
+      src =  src + '&pageUrl='+pageUrl;
+      if(testMode) {
+        src =  src + '&test=true';
+      }
+      document.body.querySelector(playerClassName).src = src;
+  }
+
+```
+
+And when you call the Ad, you call the Ad sitching only for for IOS.
+
+```
+    var testMode = false;
+    var soundcastId
+    var _iOSDevice = !!navigator.platform.match(/iPhone|iPod|iPad/);
+     if (_iOSDevice) {
+        stichAd4Ios('.player__audio', soundcastId, testMode);
+        document.body.querySelector('.player__audio').play();
+        playing = true;
+      } else { // Web + Android
+        document.body.querySelector('.player__audio').play();
+        playing = true;
+        pauseAudioContent();
+        audioAdManager.requestAd({soundcastId: soundcastId, testMode: testMode, timeout: 5});
+      }
+```
+
+
 ## Integration Sample 
 
 https://demo.soundcast.fm/
