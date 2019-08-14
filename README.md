@@ -16,7 +16,7 @@ Place this code before `</head>` tag in your web page to load `SoundCast Web SDK
 
 ```
 <!-- SoundCast SDK -->
-<script src="https://sdk.soundcast.fm/library.min.js"></script>
+<script src="https://sdk.soundcast.fm/loader.js"></script>
 <!-- /SoundCast SDK -->
 ```
 
@@ -25,7 +25,10 @@ Place this code before `</head>` tag in your web page to load `SoundCast Web SDK
 Place this code before `</body>` tag in your web page to initialize the `SoundCast Audio Ad Manager`.
 
 ```
-var audioAdManager = new soundcast.AudioAdManager(document.getElementById('companionAdContainer'));
+const sdkReady = function() {
+    var audioAdManager = new soundcast.AudioAdManager(document.getElementById('companionAdContainer'));
+}
+loadJS('https://sdk.soundcast.fm/library.min.js', sdkReady, document.body);
 ```
 
 You can add a companion ad by linking the element where you want to place the companion ad (`companionAdContainer` in our example).
