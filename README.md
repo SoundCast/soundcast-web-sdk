@@ -5,19 +5,33 @@ SoundCast Web SDK is a javascript library for loading SoundCast audio ads in pub
 
 * [Installation](#installation)
 * [Initialize](#initialize)
-* [Event Listeners](#event-listeners)
 * [Request Ad](#request-ad)
 * [IOS specific](#ios-specific)
+* [Event Listeners](#event-listeners)
 * [Testing](#testing)
 
 ## Installation
 
-Place this code before `</head>` tag in your web page to load `SoundCast Web SDK`.
+The SoundCast Loader is a cache busted JS file who load the latest version of the SoundCast SDK.
+
+A call method is triggered when the SoundCast SDK is ready.
+
+In addition to integrate the SoundCast Loader, add the following code to your <head> tag
 
 ```
-<!-- SoundCast SDK -->
-<script src="https://sdk.soundcast.fm/loader.js"></script>
-<!-- /SoundCast SDK -->
+<script type="text/javascript">
+(function(){
+    var e = document.getElementsByTagName("script")[0];
+    var script = document.createElement("script");
+    script.src = "https://sdk.soundcast.fm/loader.min.js?cb=" + Date.now();
+    script.async = true;
+    script.defer = true;
+    script.onload = function() {
+      soundcastLoader.load(onLoad)
+    };
+    e.parentNode.insertBefore(script, e);
+})();
+</script>
 ```
 
 ## Initialize
@@ -25,17 +39,56 @@ Place this code before `</head>` tag in your web page to load `SoundCast Web SDK
 Place this code before `</body>` tag in your web page to initialize the `SoundCast Audio Ad Manager`.
 
 ```
-const sdkReady = function() {
-    var audioAdManager = new soundcast.AudioAdManager(document.getElementById('companionAdContainer'));
+var onLoad = function() {
+    var audioAdManager = new soundcast.AudioAdManager(document.getElementById('companionAdContainer'))
 }
-loadJS('https://sdk.soundcast.fm/library.min.js', sdkReady, document.body);
 ```
 
 You can add a companion ad by linking the element where you want to place the companion ad (`companionAdContainer` in our example).
 
+## Request Ad
+
+Call this method to request for an audio ad.
+
+```
+audioAdManager.requestAd({ soundcastId: '[YOUR_SOUNDCAST_ID]', timeout: 5, autoplay: false })
+```
+
+Don't forgot to replace parameters between `[ ]` with your own IDs provided by us.
+
+## Play Ad
+
+Call this method to start playing the audio ad
+
+```
+audioAdManager.startAudioAd()
+```
+
+When the advertisement is over, the `soundcast.AdEvent.COMPLETE` will be fired. See the section [Event Listeners](#event-listeners) for more informations
+
+## IOS specific
+
+Due to iOS limitation, after user click on the play button you need to (without any delay):
+- play your audio content
+- pause your audio content
+- play the soundcast audio ad
+
+```
+<button class="btn--start">play</button>
+<audio class="player__audio" src="audio.mp3" type="audio/mp3"></audio>
+<script>
+document.querySelector('.btn--start').addEventListener('click', () => {
+  document.body.querySelector('.player__audio').play()
+  document.body.querySelector('.player__audio').pause()
+
+  audioAdManager.startAudioAd()
+})
+</script>
+```
+
 ## Event Listeners
 
-Add event listeners to get feedback from the library.
+You can add event listeners to follow ad completion.
 
 ```
 audioAdManager.addEventListener(
@@ -56,63 +109,6 @@ Here is the full list of events :
 * THIRD_QUARTILE: ad third quartile
 * COMPLETE: ad complete, start your audio content
 
-## Request Ad
-
-Call this method to request for an audio ad.
-
-```
-audioAdManager.requestAd({soundcastId: [YOUR_SOUNDCAST_ID], timeout: 5});
-```
-
-Don't forgot to replace parameters between `[ ]` with your own IDs provided by us.
-
-## IOS specific
-Due to IOS limitation, the ad needs to be stiched to the content. In order to do so, you just need to add the following function to your script.
-
-```
-
-  function stichAd4Ios(playerClassName, soundcastId, testMode=false) {
-    var src = document.body.querySelector(playerClassName).src;
-      var pageUrl = window.location;
-      var pageUrl = window.location;
-      src = 'https://stitch.api.soundcast.fm/v1/podcast?podcastUrl='+src;
-      src =  src + '&soundcastId='+soundcastId;
-      src =  src + '&pageUrl='+pageUrl;
-      if(testMode) {
-        src =  src + '&test=true';
-      }
-      document.body.querySelector(playerClassName).src = src;
-  }
-
-```
-
-And when you call the Ad, you call the Ad sitching only for for IOS.
-
-```
-    var testMode = false;
-    var soundcastId
-    var _iOSDevice = !!navigator.platform.match(/iPhone|iPod|iPad/);
-     if (_iOSDevice) {
-        stichAd4Ios('.player__audio', soundcastId, testMode);
-        document.body.querySelector('.player__audio').play();
-        playing = true;
-      } else { // Web + Android
-        document.body.querySelector('.player__audio').play();
-        playing = true;
-        pauseAudioContent();
-        audioAdManager.requestAd({soundcastId: soundcastId, testMode: testMode, timeout: 5});
-      }
-```
-
-
-## Integration Sample 
-
-https://demo.soundcast.fm/
-
 ## Testing
 
-To verify that your integration is working properly, add the `testMode` parameter to `loadAd` config
-
-## Any questions
-
-Please contact our support team.
+To verify that your integration is working properly, add the `testMode: true`  parameter to `requestAd` config
